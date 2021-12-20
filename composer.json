@@ -10,11 +10,10 @@
         "model",
         "moloquent"
     ],
-    "homepage": "https://github.com/jenssegers/laravel-mongodb",
     "authors": [
         {
-            "name": "Jens Segers",
-            "homepage": "https://jenssegers.com"
+            "name": "weinasi",
+            "email": "1371063261@qq.com"
         }
     ],
     "license": "MIT",

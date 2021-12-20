@@ -853,7 +853,9 @@ class Builder extends BaseBuilder
         if (!array_key_exists('multiple', $options)) {
             $options['multiple'] = true;
         }
-
+        //事务---开始2021-12-20
+        $options = $this->session($options);
+        //事务---结束2021-12-20
         $wheres = $this->compileWheres();
         $result = $this->collection->UpdateMany($wheres, $query, $options);
         if (1 == (int) $result->isAcknowledged()) {
@@ -862,6 +864,17 @@ class Builder extends BaseBuilder
 
         return 0;
     }
+
+    //事务---开始2021-12-20
+    protected function session(array $options = [])
+    {
+        if ($session = $this->connection->getSession()) {
+            $options['session'] = $this->connection->getSession();
+        }
+
+        return $options;
+    }
+    //事务---结束2021-12-20
 
     /**
      * Convert a key to ObjectID if needed.

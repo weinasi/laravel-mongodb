@@ -16,6 +16,11 @@ class Connection extends BaseConnection
     protected $db;
 
     /**
+     * @var \MongoDB\Driver\Session
+     */
+    protected $session;
+
+    /**
      * The MongoDB connection handler.
      * @var \MongoDB\Client
      */
@@ -266,6 +271,64 @@ class Connection extends BaseConnection
     {
         return new Schema\Grammar();
     }
+
+    //事务---开始
+    /**
+     * @description: 创建事务
+     *
+     * @param array $options
+     * @date 2021-12-20
+     */
+    public function beginTransaction(array $options = [])
+    {
+        if (!$this->getSession()) {
+            $this->session = $this->getMongoClient()->startSession();
+            $this->session->startTransaction($options);
+        }
+    }
+
+    /**
+     * @description: 提交
+     *
+     * @date 2021-12-20
+     */
+    public function commit()
+    {
+        if ($this->getSession()) {
+            $this->session->commitTransaction();
+            $this->clearSession();
+        }
+    }
+
+    /**
+     * @description: 回滚
+     *
+     * @param $toLevel
+     * @date 2021-12-20
+     */
+    public function rollBack($toLevel = null)
+    {
+        if ($this->getSession()) {
+            $this->session->abortTransaction();
+            $this->clearSession();
+        }
+    }
+
+    /**
+     * @description: 清理session
+     *
+     * @date 2021-12-20
+     */
+    protected function clearSession()
+    {
+        $this->session = null;
+    }
+
+    public function getSession()
+    {
+        return $this->session;
+    }
+    //事务---结束
 
     /**
      * Dynamically pass methods to the connection.
